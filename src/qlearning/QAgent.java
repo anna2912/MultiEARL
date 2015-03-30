@@ -62,7 +62,22 @@ public class QAgent implements Agent<String> {
 		if (!comparable)
 			return -1;
 		
-		return maxIndex;
+		Vector<Integer> maxSet = new Vector<Integer>();
+		maxSet.add(maxIndex);
+		
+		for (int i = 0; i < q.size(); i++) {
+			if (i != maxIndex) {
+				int compRes = compareReward(q.get(i), maxQ);
+				if (compRes == 0) {
+					maxSet.add(i);
+				}
+			}
+		}
+		
+		Random rand = new Random();
+		
+		return maxSet.get(rand.nextInt(maxSet.size()));
+		
 	}
 	
 	public int compareReward (List<Double> r1, List<Double> r2) {
