@@ -43,37 +43,26 @@ public class QAgent implements Agent<String> {
 	}
 	
 	public int maxQIndex () {
-		boolean comparable = false;
-		Vector<Double> maxQ = q.get(0);
-		int maxIndex = 0;
-
-		for (int i = 1; i < q.size(); i++) {
-			int compRes = compareReward(q.get(i), maxQ);
-			if (compRes != 0) {
-				comparable = true;
-				if (compRes == 1) {
-					maxQ = q.get(i);
-					maxIndex = i;
-					comparable = true;
-				}
-			}
-		}
-		
-		if (!comparable)
-			return -1;
-		
 		Vector<Integer> maxSet = new Vector<Integer>();
-		maxSet.add(maxIndex);
 		
-		for (int i = 0; i < q.size(); i++) {
-			if (i != maxIndex) {
-				int compRes = compareReward(q.get(i), maxQ);
-				if (compRes == 0) {
-					maxSet.add(i);
+		for(int cand = 0; cand < q.size(); cand++) {
+			boolean isDominated = false;
+			for (int i = 0; i < q.size(); i++) {
+				if (cand != i) {
+					int compRes = compareReward(q.get(i), q.get(cand));
+					if (compRes == 1) {
+						isDominated = true;
+						break;
+					}
 				}
 			}
+
+			if (!isDominated)
+				maxSet.add(cand);
+	
 		}
-		
+
+
 		Random rand = new Random();
 		
 		return maxSet.get(rand.nextInt(maxSet.size()));
@@ -99,6 +88,8 @@ public class QAgent implements Agent<String> {
 				return 0;
 			return -1;
 		}
+		if (ls != 0)
+			return 0;
 		
 		return 1;
 	}
